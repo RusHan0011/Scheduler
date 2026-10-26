@@ -136,6 +136,7 @@
     </div>
 </div>
 
+
 <script>
 const hourSel = document.getElementById('hourSelector');
 for(let h=0; h<24; h++) {
@@ -149,51 +150,359 @@ for(let h=0; h<24; h++) {
 const teamDataset = [
     {
         "name": "Елена Ежова",
-        "schedule": {}
+        "schedule": {
+            "1": "12-22",
+            "2": "11-21",
+            "3": "В",
+            "4": "В",
+            "5": "11-21",
+            "6": "В",
+            "7": "В",
+            "_meta": {
+                "1": {
+                    "start": 12,
+                    "end": 22
+                },
+                "2": {
+                    "start": 11,
+                    "end": 21
+                },
+                "5": {
+                    "start": 11,
+                    "end": 21
+                }
+            }
+        }
     },
     {
         "name": "Бондаренко Ирина",
-        "schedule": {}
+        "schedule": {
+            "1": "В",
+            "2": "9-19",
+            "3": "9-19",
+            "4": "В",
+            "5": "В",
+            "6": "7-16",
+            "7": "7-16",
+            "_meta": {
+                "2": {
+                    "start": 9,
+                    "end": 19
+                },
+                "3": {
+                    "start": 9,
+                    "end": 19
+                },
+                "6": {
+                    "start": 7,
+                    "end": 16
+                },
+                "7": {
+                    "start": 7,
+                    "end": 16
+                }
+            }
+        }
     },
     {
         "name": "Караханова Зарият",
-        "schedule": {}
+        "schedule": {
+            "1": "10-20",
+            "2": "10-19",
+            "3": "10-20",
+            "4": "11-21",
+            "5": "11-16",
+            "6": "В",
+            "7": "11-21",
+            "_meta": {
+                "1": {
+                    "start": 10,
+                    "end": 20
+                },
+                "2": {
+                    "start": 10,
+                    "end": 19
+                },
+                "3": {
+                    "start": 10,
+                    "end": 20
+                },
+                "4": {
+                    "start": 11,
+                    "end": 21
+                },
+                "5": {
+                    "start": 11,
+                    "end": 16
+                },
+                "7": {
+                    "start": 11,
+                    "end": 21
+                }
+            }
+        }
     },
     {
         "name": "Макарова Лина",
-        "schedule": {}
+        "schedule": {
+            "1": "9-19",
+            "2": "В",
+            "3": "10-21",
+            "4": "10-22",
+            "5": "10-20",
+            "6": "В",
+            "7": "9-19",
+            "_meta": {
+                "1": {
+                    "start": 9,
+                    "end": 19
+                },
+                "3": {
+                    "start": 10,
+                    "end": 21
+                },
+                "4": {
+                    "start": 10,
+                    "end": 22
+                },
+                "5": {
+                    "start": 10,
+                    "end": 20
+                },
+                "7": {
+                    "start": 9,
+                    "end": 19
+                }
+            }
+        }
     },
     {
         "name": "Грибовская Юлия",
-        "schedule": {}
+        "schedule": {
+            "1": "11-21",
+            "2": "10-20",
+            "3": "В",
+            "4": "В",
+            "5": "12-22",
+            "6": "9-19",
+            "7": "В",
+            "_meta": {
+                "1": {
+                    "start": 11,
+                    "end": 21
+                },
+                "2": {
+                    "start": 10,
+                    "end": 20
+                },
+                "5": {
+                    "start": 12,
+                    "end": 22
+                },
+                "6": {
+                    "start": 9,
+                    "end": 19
+                }
+            }
+        }
     },
     {
         "name": "Макеева Мария",
-        "schedule": {}
+        "schedule": {
+            "1": "В",
+            "2": "В",
+            "3": "В",
+            "4": "9-19",
+            "5": "9-19",
+            "6": "12-22",
+            "7": "В",
+            "_meta": {
+                "4": {
+                    "start": 9,
+                    "end": 19
+                },
+                "5": {
+                    "start": 9,
+                    "end": 19
+                },
+                "6": {
+                    "start": 12,
+                    "end": 22
+                }
+            }
+        }
     },
     {
         "name": "Кипина Анна",
-        "schedule": {}
+        "schedule": {
+            "1": "Sat Nov 07 2026 00:00:00 GMT+0300 (Москва, стандартное время)",
+            "2": "Mon Dec 07 2026 00:00:00 GMT+0300 (Москва, стандартное время)",
+            "3": "7-20",
+            "4": "7-20",
+            "5": "Mon Dec 07 2026 00:00:00 GMT+0300 (Москва, стандартное время)",
+            "6": "В",
+            "7": "В",
+            "_meta": {
+                "3": {
+                    "start": 7,
+                    "end": 20
+                },
+                "4": {
+                    "start": 7,
+                    "end": 20
+                }
+            }
+        }
     },
     {
         "name": "Раджабова Эльмира",
-        "schedule": {}
+        "schedule": {
+            "1": "В",
+            "2": "14-22",
+            "3": "14-22",
+            "4": "В",
+            "5": "В",
+            "6": "14-22",
+            "7": "14-22",
+            "_meta": {
+                "2": {
+                    "start": 14,
+                    "end": 22
+                },
+                "3": {
+                    "start": 14,
+                    "end": 22
+                },
+                "6": {
+                    "start": 14,
+                    "end": 22
+                },
+                "7": {
+                    "start": 14,
+                    "end": 22
+                }
+            }
+        }
     },
     {
         "name": "Юсупмурзина Анна",
-        "schedule": {}
+        "schedule": {
+            "1": "12-17",
+            "2": "В",
+            "3": "11-17",
+            "4": "12-18",
+            "5": "12-18",
+            "6": "В",
+            "7": "В",
+            "_meta": {
+                "1": {
+                    "start": 12,
+                    "end": 17
+                },
+                "3": {
+                    "start": 11,
+                    "end": 17
+                },
+                "4": {
+                    "start": 12,
+                    "end": 18
+                },
+                "5": {
+                    "start": 12,
+                    "end": 18
+                }
+            }
+        }
     },
     {
         "name": "Мурашова Виктория",
-        "schedule": {}
+        "schedule": {
+            "1": "12-17",
+            "2": "12-17",
+            "3": "В",
+            "4": "11-17",
+            "5": "11-17",
+            "6": "В",
+            "7": "В",
+            "_meta": {
+                "1": {
+                    "start": 12,
+                    "end": 17
+                },
+                "2": {
+                    "start": 12,
+                    "end": 17
+                },
+                "4": {
+                    "start": 11,
+                    "end": 17
+                },
+                "5": {
+                    "start": 11,
+                    "end": 17
+                }
+            }
+        }
     },
     {
         "name": "Фролова Виолетта",
-        "schedule": {}
+        "schedule": {
+            "1": "12-18",
+            "2": "12-18",
+            "3": "13-18",
+            "4": "В",
+            "5": "12-18",
+            "6": "В",
+            "7": "В",
+            "_meta": {
+                "1": {
+                    "start": 12,
+                    "end": 18
+                },
+                "2": {
+                    "start": 12,
+                    "end": 18
+                },
+                "3": {
+                    "start": 13,
+                    "end": 18
+                },
+                "5": {
+                    "start": 12,
+                    "end": 18
+                }
+            }
+        }
     },
     {
         "name": "Молинская Ольга",
-        "schedule": {}
+        "schedule": {
+            "1": "12-19",
+            "2": "13-19",
+            "3": "12-19",
+            "4": "12-19",
+            "5": "В",
+            "6": "В",
+            "7": "В",
+            "_meta": {
+                "1": {
+                    "start": 12,
+                    "end": 19
+                },
+                "2": {
+                    "start": 13,
+                    "end": 19
+                },
+                "3": {
+                    "start": 12,
+                    "end": 19
+                },
+                "4": {
+                    "start": 12,
+                    "end": 19
+                }
+            }
+        }
     }
 ];
 // END_DATA_MARKER
@@ -207,31 +516,31 @@ teamDataset.forEach((emp, index) => {
     grid.appendChild(card);
 });
 
-function parseHours(hoursStr, emp, targetDay) {
-  if (emp && emp.schedule && emp.schedule._meta && emp.schedule._meta[targetDay]) {
-    return emp.schedule._meta[targetDay];
-  }
-    if (!hoursStr || hoursStr === "В" || hoursStr === "О") {
-        return { start: null, end: null };
-    }
-    const parts = hoursStr.split('-');
-    if (parts.length !== 2) {
-        return { start: null, end: null };
-    }
-    return { start: parseInt(parts[0], 10), end: parseInt(parts[1], 10) };
-}
-
 function processSchedule() {
     const now = new Date();
     const currentHour = now.getHours();
     const currentMinutes = now.getMinutes();
-    let dayIndex = now.getDay();
-    const daysMap = ["вс", "пн", "вт", "ср", "чт", "пт", "сб"];
     
+    // Переводим текущий день в формат таблицы (1 = Пн, 2 = Вт ... 7 = Вс)
+    let currentDayIndex = now.getDay(); 
+    if (currentDayIndex === 0) currentDayIndex = 7; 
+
     document.getElementById('liveClock').innerText = "Системное время: " + String(currentHour).padStart(2,'0') + ":" + String(currentMinutes).padStart(2,'0');
 
     const selectedDayVal = document.getElementById('daySelector').value;
-    const targetDay = (selectedDayVal === 'current') ? daysMap[dayIndex] : selectedDayVal;
+    
+    // Определяем целевой день: либо выбранный вручную, либо автоматический числовой индекс
+    let targetDay = selectedDayVal;
+    if (selectedDayVal === 'current') {
+        targetDay = currentDayIndex;
+        // Автоматически подсвечиваем нужный день в выпадающем списке сайта
+        const dayOptions = ["пн", "вт", "ср", "чт", "пт", "сб", "вс"];
+        targetDay = dayOptions[currentDayIndex - 1];
+    }
+    
+    // Переводим строковое значение ("пн", "вт") в числовой индекс колонки для базы данных
+    const dayToIdx = { "пн": 1, "вт": 2, "ср": 3, "чт": 4, "пт": 5, "сб": 6, "вс": 7 };
+    const dayKey = dayToIdx[targetDay] || 1;
 
     const selectedHourVal = document.getElementById('hourSelector').value;
     const targetHour = (selectedHourVal === 'current') ? currentHour : parseInt(selectedHourVal, 10);
@@ -248,8 +557,12 @@ function processSchedule() {
         if (!cardEl) return;
         const hoursTextEl = document.getElementById('hours-text-' + index);
         
-        const todayShiftStr = emp.schedule[targetDay] || "В";
-        const timeObj = parseHours(todayShiftStr, emp, targetDay);
+        const todayShiftStr = emp.schedule[dayKey] || "В";
+        
+        let timeObj = { start: null, end: null };
+        if (emp.schedule._meta && emp.schedule._meta[dayKey]) {
+            timeObj = emp.schedule._meta[dayKey];
+        }
 
         const isWorkingToday = (timeObj.start !== null);
         const hoursCount = isWorkingToday ? (timeObj.end - timeObj.start) : 0;
@@ -299,5 +612,5 @@ function processSchedule() {
 processSchedule();
 setInterval(processSchedule, 30000);
 </script>
-</body>
+  </body>
 </html>
