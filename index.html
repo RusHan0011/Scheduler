@@ -138,6 +138,7 @@
 
 
 
+
 <script>
 const hourSel = document.getElementById('hourSelector');
 for(let h=0; h<24; h++) {
@@ -336,14 +337,22 @@ const teamDataset = [
     {
         "name": "Кипина Анна",
         "schedule": {
-            "1": "00:00",
-            "2": "00:00",
+            "1": "0-0",
+            "2": "0-0",
             "3": "7-20",
             "4": "7-20",
-            "5": "00:00",
+            "5": "0-0",
             "6": "В",
             "7": "В",
             "_meta": {
+                "1": {
+                    "start": 0,
+                    "end": 0
+                },
+                "2": {
+                    "start": 0,
+                    "end": 0
+                },
                 "3": {
                     "start": 7,
                     "end": 20
@@ -351,6 +360,10 @@ const teamDataset = [
                 "4": {
                     "start": 7,
                     "end": 20
+                },
+                "5": {
+                    "start": 0,
+                    "end": 0
                 }
             }
         }
@@ -509,14 +522,6 @@ const teamDataset = [
 // END_DATA_MARKER
 
 const grid = document.getElementById('matrixGrid');
-teamDataset.forEach((emp, index) => {
-    const card = document.createElement('div');
-    card.className = 'emp-card';
-    card.id = 'emp-' + index;
-    card.innerHTML = "<div class='status-dot'></div><div class='emp-name'>" + emp.name + "</div><div class='emp-hours' id='hours-text-' + index + ''>--</div>";
-});
-
-// Пересоздаем сетку карточек динамически для стабильности
 if(grid) {
     grid.innerHTML = '';
     teamDataset.forEach((emp, index) => {
@@ -586,7 +591,6 @@ function processSchedule() {
             hoursTextEl.style.background = "rgba(255, 77, 77, 0.15)";
             hoursTextEl.style.color = "var(--off-red)";
         } else {
-            // КРАСИВЫЙ ВЫВОД ВРЕМЕНИ: Превращаем "9-19" в "09:00 - 19:00"
             if (todayShiftStr.includes("-")) {
                 const cleanParts = todayShiftStr.split("-");
                 const sH = cleanParts[0].padStart(2, '0');
@@ -609,7 +613,6 @@ function processSchedule() {
 
             const item = document.createElement('div');
             item.className = 'list-item';
-            // Красивое время окончания смены в правой панели
             const endFormatted = timeObj.end.toString().padStart(2, '0') + ":00";
             item.innerHTML = "<span>👤 " + emp.name + "</span> <span>до " + endFormatted + "</span>";
             listContainer.appendChild(item);
