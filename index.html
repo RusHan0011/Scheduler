@@ -207,7 +207,10 @@ teamDataset.forEach((emp, index) => {
     grid.appendChild(card);
 });
 
-function parseHours(hoursStr) {
+function parseHours(hoursStr, emp, targetDay) {
+  if (emp && emp.schedule && emp.schedule._meta && emp.schedule._meta[targetDay]) {
+    return emp.schedule._meta[targetDay];
+  }
     if (!hoursStr || hoursStr === "В" || hoursStr === "О") {
         return { start: null, end: null };
     }
@@ -246,7 +249,7 @@ function processSchedule() {
         const hoursTextEl = document.getElementById('hours-text-' + index);
         
         const todayShiftStr = emp.schedule[targetDay] || "В";
-        const timeObj = parseHours(todayShiftStr);
+        const timeObj = parseHours(todayShiftStr, emp, targetDay);
 
         const isWorkingToday = (timeObj.start !== null);
         const hoursCount = isWorkingToday ? (timeObj.end - timeObj.start) : 0;
