@@ -140,6 +140,7 @@
 
 
 
+
 <script>
 const hourSel = document.getElementById('hourSelector');
 for(let h=0; h<24; h++) {
@@ -338,21 +339,21 @@ const teamDataset = [
     {
         "name": "Кипина Анна",
         "schedule": {
-            "1": "0-0",
-            "2": "0-0",
+            "1": "7-11",
+            "2": "7-12",
             "3": "7-20",
             "4": "7-20",
-            "5": "0-0",
+            "5": "7-12",
             "6": "В",
             "7": "В",
             "_meta": {
                 "1": {
-                    "start": 0,
-                    "end": 0
+                    "start": 7,
+                    "end": 11
                 },
                 "2": {
-                    "start": 0,
-                    "end": 0
+                    "start": 7,
+                    "end": 12
                 },
                 "3": {
                     "start": 7,
@@ -363,8 +364,8 @@ const teamDataset = [
                     "end": 20
                 },
                 "5": {
-                    "start": 0,
-                    "end": 0
+                    "start": 7,
+                    "end": 12
                 }
             }
         }
@@ -592,11 +593,10 @@ function processSchedule() {
             hoursTextEl.style.background = "rgba(255, 77, 77, 0.15)";
             hoursTextEl.style.color = "var(--off-red)";
         } else {
-            // ФОРМАТИРОВАНИЕ СТРОКИ: Теперь строго берем элементы [0] и!
             if (todayShiftStr.toString().includes("-")) {
                 const cleanParts = todayShiftStr.toString().split("-");
-                const sH = cleanParts[0].padStart(2, '0');
-                const eH = cleanParts[1].padStart(2, '0');
+                const sH = cleanParts[0].trim().padStart(2, '0');
+                const eH = cleanParts[1].trim().padStart(2, '0');
                 hoursTextEl.innerText = "Смена: " + sH + ":00 - " + eH + ":00";
             } else {
                 hoursTextEl.innerText = "Смена: " + todayShiftStr;
