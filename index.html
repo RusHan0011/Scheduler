@@ -1,256 +1,50 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Оперативный дашборд смен команды</title>
-    <style>
-        :root {
-            --bg-main: #111114;
-            --bg-panel: #1a1a22;
-            --bg-card: #262632;
-            --bg-select: #323242;
-            --text-main: #ffffff;
-            --text-muted: #8e8e9f;
-            --active-green: #2ed573;
-            --rest-amber: #ff9f1a;
-            --off-red: #ff4d4d;
-            --accent: #bc70ff;
-        }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--bg-main);
-            color: var(--text-main);
-            margin: 0;
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            box-sizing: border-box;
-        }
-        header { 
-            margin-bottom: 20px; 
-            border-bottom: 1px solid #2d2d3d; 
-            padding-bottom: 10px; 
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        h1 { margin: 0; font-size: 22px; font-weight: 600; }
-        .current-time-badge { background: var(--bg-panel); padding: 8px 16px; border-radius: 8px; border: 1px solid var(--accent); font-weight: bold; font-size: 14px; }
-        .workspace { display: flex; gap: 20px; flex: 1; min-height: 0; }
-        
-        .sidebar-left { width: 290px; background: var(--bg-panel); padding: 20px; border-radius: 12px; display: flex; flex-direction: column; gap: 16px; height: fit-content; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
-        h3 { margin: 0 0 10px 0; font-size: 14px; text-transform: uppercase; color: var(--accent); letter-spacing: 0.5px; }
-        .filter-field { display: flex; flex-direction: column; gap: 6px; }
-        label { font-size: 13px; color: var(--text-muted); }
-        select { background: var(--bg-select); color: var(--text-main); border: 1px solid #4a4a5a; padding: 10px; border-radius: 8px; font-size: 14px; cursor: pointer; outline: none; }
-        
-        .matrix-area { flex: 1; background: var(--bg-panel); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; min-height: 0; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
-        .matrix-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; overflow-y: auto; flex: 1; align-content: start; }
-        
-        .emp-card { background: var(--bg-card); padding: 16px; border-radius: 10px; border-top: 4px solid var(--text-muted); transition: all 0.2s ease; box-sizing: border-box; position: relative; }
-        .emp-name { font-weight: bold; font-size: 15px; margin-bottom: 4px; color: #fff; }
-        .emp-hours { font-size: 12px; background: rgba(255,255,255,0.05); padding: 6px 10px; border-radius: 6px; display: inline-block; margin-top: 8px; font-weight: 500; }
-        
-        .emp-card.working-now { border-top-color: var(--active-green); box-shadow: 0 0 12px rgba(46, 213, 115, 0.2); }
-        .emp-card.resting-now { border-top-color: var(--rest-amber); }
-        .emp-card.off-today { border-top-color: var(--off-red); }
-        
-        .status-dot { width: 8px; height: 8px; border-radius: 50%; position: absolute; top: 18px; right: 18px; }
-        .working-now .status-dot { background-color: var(--active-green); }
-        .resting-now .status-dot { background-color: var(--rest-amber); }
-        .off-today .status-dot { background-color: var(--off-red); }
-
-        .emp-card.dimmed { opacity: 0.12; transform: scale(0.96); filter: grayscale(70%); }
-
-        .sidebar-right { width: 320px; background: var(--bg-panel); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; min-height: 0; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
-        .widget { background: var(--bg-card); padding: 14px; border-radius: 8px; border-left: 4px solid var(--accent); margin-bottom: 12px; }
-        .widget-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; }
-        .widget-value { font-size: 18px; font-weight: 700; margin-top: 4px; }
-        
-        .list-container { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
-        .list-item { background: var(--bg-card); padding: 10px; border-radius: 8px; font-size: 13px; display: flex; justify-content: space-between; align-items: center; border-left: 3px solid var(--active-green); }
-        .list-item span:last-child { font-size: 11px; color: var(--text-muted); background: #323242; padding: 2px 6px; border-radius: 4px; }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-thumb { background: #4a4a5a; border-radius: 10px; }
-    </style>
-</head>
-<body>
-
-<header>
-    <div>
-        <h1>Интерактивный дашборд расписания сотрудников</h1>
-        <div style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">Визуальный контроль и расчет человеко-часов команды</div>
-    </div>
-    <div class="current-time-badge" id="liveClock">Системное время: --:--</div>
-</header>
-
-<div class="workspace">
-    <div class="sidebar-left">
-        <h3>Управление выборкой</h3>
-        <div class="filter-field">
-            <label>День недели</label>
-            <select id="daySelector" onchange="processSchedule()">
-                <option value="current">📅 Текущий день (Авто)</option>
-                <option value="пн">Понедельник (26.10)</option>
-                <option value="вт">Вторник (27.10)</option>
-                <option value="ср">Среда (28.10)</option>
-                <option value="чт">Четверг (29.10)</option>
-                <option value="пт">Пятница (30.10)</option>
-                <option value="сб">Суббота (31.10)</option>
-                <option value="вс">Воскресенье (01.11)</option>
-            </select>
-        </div>
-        <div class="filter-field">
-            <label>Контроль времени (Час)</label>
-            <select id="hourSelector" onchange="processSchedule()">
-                <option value="current">⌚ Текущий час (Авто)</option>
-            </select>
-        </div>
-        <div class="filter-field">
-            <label>Режим отображения</label>
-            <select id="viewMode" onchange="processSchedule()">
-                <option value="all">👥 Показать всю команду</option>
-                <option value="now">⚡ Только те, кто на смене</option>
-            </select>
-        </div>
-    </div>
-
-    <div class="matrix-area">
-        <h3>Карта доступности сотрудников</h3>
-        <div class="matrix-grid" id="matrixGrid"></div>
-    </div>
-
-    <div class="sidebar-right">
-        <h3>Оперативная сводка</h3>
-        <div class="widget">
-            <div class="widget-label">Отработано человеко-часов за день</div>
-            <div class="widget-value" id="totalManHours">0 ч.</div>
-        </div>
-        <div class="widget" style="border-left-color: var(--active-green);">
-            <div class="widget-label">Сотрудников на смене в этот час</div>
-            <div class="widget-value" id="activeCount">0 чел.</div>
-        </div>
-        <h3 style="margin-top: 10px; font-size: 12px; color: var(--active-green);">На смене прямо сейчас:</h3>
-        <div class="list-container" id="listContainer"></div>
-    </div>
-</div>
-
-<!-- ПОДКЛЮЧАЕМ ВНЕШНИЙ ФАЙЛ ДАННЫХ ИЗ GOOGLE ТАБЛИЦЫ -->
-<script src="dataset.js"></script>
-
-<!-- ОСНОВНАЯ ЛОГИКА САЙТА -->
-<script>
-const hourSel = document.getElementById('hourSelector');
-for(let h=0; h<24; h++) {
-    let opt = document.createElement('option');
-    opt.value = h;
-    opt.innerText = "В разрезе времени: " + String(h).padStart(2, '0') + ":00";
-    hourSel.appendChild(opt);
-}
-
-// Проверка на случай, если файл dataset.js еще не создался таблицей
-if (typeof teamDataset === 'undefined') {
-    window.teamDataset = [];
-}
-
-const grid = document.getElementById('matrixGrid');
-teamDataset.forEach((emp, index) => {
-    const card = document.createElement('div');
-    card.className = 'emp-card';
-    card.id = 'emp-' + index;
-    card.innerHTML = "<div class='status-dot'></div><div class='emp-name'>" + emp.name + "</div><div class='emp-hours' id='hours-text-" + index + "'>--</div>";
-    grid.appendChild(card);
-});
-
-function parseHours(hoursStr) {
-    if (!hoursStr || hoursStr === "В" || hoursStr === "О") {
-        return { start: null, end: null };
+const teamDataset = [
+    {
+        "name": "Елена Ежова",
+        "schedule": {}
+    },
+    {
+        "name": "Бондаренко Ирина",
+        "schedule": {}
+    },
+    {
+        "name": "Караханова Зарият",
+        "schedule": {}
+    },
+    {
+        "name": "Макарова Лина",
+        "schedule": {}
+    },
+    {
+        "name": "Грибовская Юлия",
+        "schedule": {}
+    },
+    {
+        "name": "Макеева Мария",
+        "schedule": {}
+    },
+    {
+        "name": "Кипина Анна",
+        "schedule": {}
+    },
+    {
+        "name": "Раджабова Эльмира",
+        "schedule": {}
+    },
+    {
+        "name": "Юсупмурзина Анна",
+        "schedule": {}
+    },
+    {
+        "name": "Мурашова Виктория",
+        "schedule": {}
+    },
+    {
+        "name": "Фролова Виолетта",
+        "schedule": {}
+    },
+    {
+        "name": "Молинская Ольга",
+        "schedule": {}
     }
-    const parts = hoursStr.split('-');
-    if (parts.length !== 2) {
-        return { start: null, end: null };
-    }
-    return { start: parseInt(parts[0], 10), end: parseInt(parts[1], 10) };
-}
-
-function processSchedule() {
-    const now = new Date();
-    const currentHour = now.getHours();
-    const currentMinutes = now.getMinutes();
-    let dayIndex = now.getDay();
-    const daysMap = ["вс", "пн", "вт", "ср", "чт", "пт", "сб"];
-    
-    document.getElementById('liveClock').innerText = "Системное время: " + String(currentHour).padStart(2,'0') + ":" + String(currentMinutes).padStart(2,'0');
-
-    const selectedDayVal = document.getElementById('daySelector').value;
-    const targetDay = (selectedDayVal === 'current') ? daysMap[dayIndex] : selectedDayVal;
-
-    const selectedHourVal = document.getElementById('hourSelector').value;
-    const targetHour = (selectedHourVal === 'current') ? currentHour : parseInt(selectedHourVal, 10);
-
-    const viewMode = document.getElementById('viewMode').value;
-    const listContainer = document.getElementById('listContainer');
-    listContainer.innerHTML = '';
-
-    let totalDayHours = 0;
-    let activeOnShift = 0;
-
-    teamDataset.forEach((emp, index) => {
-        const cardEl = document.getElementById('emp-' + index);
-        if (!cardEl) return;
-        const hoursTextEl = document.getElementById('hours-text-' + index);
-        
-        const todayShiftStr = emp.schedule[targetDay] || "В";
-        const timeObj = parseHours(todayShiftStr);
-
-        const isWorkingToday = (timeObj.start !== null);
-        const hoursCount = isWorkingToday ? (timeObj.end - timeObj.start) : 0;
-        totalDayHours += hoursCount;
-
-        const isWorkingRightNow = isWorkingToday && (targetHour >= timeObj.start && targetHour < timeObj.end);
-
-        if (todayShiftStr === "В") {
-            hoursTextEl.innerText = "Выходной";
-            hoursTextEl.style.background = "rgba(255, 77, 77, 0.15)";
-            hoursTextEl.style.color = "var(--off-red)";
-        } else if (todayShiftStr === "О") {
-            hoursTextEl.innerText = "Отсутствует";
-            hoursTextEl.style.background = "rgba(255, 77, 77, 0.15)";
-            hoursTextEl.style.color = "var(--off-red)";
-        } else {
-            hoursTextEl.innerText = "Смена: " + todayShiftStr + ":00";
-            hoursTextEl.style.background = "rgba(46, 213, 115, 0.1)";
-            hoursTextEl.style.color = "var(--active-green)";
-        }
-
-        cardEl.classList.remove('working-now', 'resting-now', 'off-today', 'dimmed');
-
-        if (!isWorkingToday) {
-            cardEl.classList.add('off-today');
-        } else if (isWorkingRightNow) {
-            cardEl.classList.add('working-now');
-            activeOnShift++;
-
-            const item = document.createElement('div');
-            item.className = 'list-item';
-            item.innerHTML = "<span>👤 " + emp.name + "</span> <span>до " + timeObj.end + ":00</span>";
-            listContainer.appendChild(item);
-        } else {
-            cardEl.classList.add('resting-now');
-        }
-
-        if (viewMode === 'now' && !isWorkingRightNow) {
-            cardEl.classList.add('dimmed');
-        }
-    });
-
-    document.getElementById('totalManHours').innerText = totalDayHours + " ч.";
-    document.getElementById('activeCount').innerText = activeOnShift + " чел.";
-}
-
-processSchedule();
-setInterval(processSchedule, 30000);
-</script>
-</body>
-</html>
+];
