@@ -137,6 +137,7 @@
 </div>
 
 
+
 <script>
 const hourSel = document.getElementById('hourSelector');
 for(let h=0; h<24; h++) {
@@ -335,11 +336,11 @@ const teamDataset = [
     {
         "name": "Кипина Анна",
         "schedule": {
-            "1": "Sat Nov 07 2026 00:00:00 GMT+0300 (Москва, стандартное время)",
-            "2": "Mon Dec 07 2026 00:00:00 GMT+0300 (Москва, стандартное время)",
+            "1": "00:00",
+            "2": "00:00",
             "3": "7-20",
             "4": "7-20",
-            "5": "Mon Dec 07 2026 00:00:00 GMT+0300 (Москва, стандартное время)",
+            "5": "00:00",
             "6": "В",
             "7": "В",
             "_meta": {
@@ -512,16 +513,26 @@ teamDataset.forEach((emp, index) => {
     const card = document.createElement('div');
     card.className = 'emp-card';
     card.id = 'emp-' + index;
-    card.innerHTML = "<div class='status-dot'></div><div class='emp-name'>" + emp.name + "</div><div class='emp-hours' id='hours-text-" + index + "'>--</div>";
-    grid.appendChild(card);
+    card.innerHTML = "<div class='status-dot'></div><div class='emp-name'>" + emp.name + "</div><div class='emp-hours' id='hours-text-' + index + ''>--</div>";
 });
+
+// Пересоздаем сетку карточек динамически для стабильности
+if(grid) {
+    grid.innerHTML = '';
+    teamDataset.forEach((emp, index) => {
+        const card = document.createElement('div');
+        card.className = 'emp-card';
+        card.id = 'emp-' + index;
+        card.innerHTML = "<div class='status-dot'></div><div class='emp-name'>" + emp.name + "</div><div class='emp-hours' id='hours-text-" + index + "'>--</div>";
+        grid.appendChild(card);
+    });
+}
 
 function processSchedule() {
     const now = new Date();
     const currentHour = now.getHours();
     const currentMinutes = now.getMinutes();
     
-    // Переводим текущий день в формат таблицы (1 = Пн, 2 = Вт ... 7 = Вс)
     let currentDayIndex = now.getDay(); 
     if (currentDayIndex === 0) currentDayIndex = 7; 
 
@@ -529,16 +540,12 @@ function processSchedule() {
 
     const selectedDayVal = document.getElementById('daySelector').value;
     
-    // Определяем целевой день: либо выбранный вручную, либо автоматический числовой индекс
     let targetDay = selectedDayVal;
     if (selectedDayVal === 'current') {
-        targetDay = currentDayIndex;
-        // Автоматически подсвечиваем нужный день в выпадающем списке сайта
         const dayOptions = ["пн", "вт", "ср", "чт", "пт", "сб", "вс"];
         targetDay = dayOptions[currentDayIndex - 1];
     }
     
-    // Переводим строковое значение ("пн", "вт") в числовой индекс колонки для базы данных
     const dayToIdx = { "пн": 1, "вт": 2, "ср": 3, "чт": 4, "пт": 5, "сб": 6, "вс": 7 };
     const dayKey = dayToIdx[targetDay] || 1;
 
@@ -570,16 +577,24 @@ function processSchedule() {
 
         const isWorkingRightNow = isWorkingToday && (targetHour >= timeObj.start && targetHour < timeObj.end);
 
-        if (todayShiftStr === "В") {
+        if (todayShiftStr === "В" || todayShiftStr === "Выходной") {
             hoursTextEl.innerText = "Выходной";
             hoursTextEl.style.background = "rgba(255, 77, 77, 0.15)";
             hoursTextEl.style.color = "var(--off-red)";
-        } else if (todayShiftStr === "О") {
+        } else if (todayShiftStr === "О" || todayShiftStr === "Отсутствует") {
             hoursTextEl.innerText = "Отсутствует";
             hoursTextEl.style.background = "rgba(255, 77, 77, 0.15)";
             hoursTextEl.style.color = "var(--off-red)";
         } else {
-            hoursTextEl.innerText = "Смена: " + todayShiftStr + ":00";
+            // КРАСИВЫЙ ВЫВОД ВРЕМЕНИ: Превращаем "9-19" в "09:00 - 19:00"
+            if (todayShiftStr.includes("-")) {
+                const cleanParts = todayShiftStr.split("-");
+                const sH = cleanParts[0].padStart(2, '0');
+                const eH = cleanParts[1].padStart(2, '0');
+                hoursTextEl.innerText = "Смена: " + sH + ":00 - " + eH + ":00";
+            } else {
+                hoursTextEl.innerText = "Смена: " + todayShiftStr;
+            }
             hoursTextEl.style.background = "rgba(46, 213, 115, 0.1)";
             hoursTextEl.style.color = "var(--active-green)";
         }
@@ -594,7 +609,9 @@ function processSchedule() {
 
             const item = document.createElement('div');
             item.className = 'list-item';
-            item.innerHTML = "<span>👤 " + emp.name + "</span> <span>до " + timeObj.end + ":00</span>";
+            // Красивое время окончания смены в правой панели
+            const endFormatted = timeObj.end.toString().padStart(2, '0') + ":00";
+            item.innerHTML = "<span>👤 " + emp.name + "</span> <span>до " + endFormatted + "</span>";
             listContainer.appendChild(item);
         } else {
             cardEl.classList.add('resting-now');
